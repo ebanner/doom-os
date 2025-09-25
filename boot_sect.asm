@@ -1,8 +1,5 @@
 [org 0x7C00]
 
-CODE_SEGMENT_SELECTOR_INDEX equ (1 << 3)        ; 0x08
-DATA_SEGMENT_SELECTOR_INDEX equ (1 << 4)        ; 0x10
-
 [bits 16]
 main:
     cli
@@ -33,7 +30,12 @@ mov edi, [gdt_start+20]      ; expect 0x00CF9200
 
 jmp $                   ; spin forever
 
+
 ; ---------------- GDT ----------------
+
+CODE_SEGMENT_SELECTOR_INDEX equ (1 << 3)        ; 0x08
+DATA_SEGMENT_SELECTOR_INDEX equ (2 << 3)        ; 0x10
+
 gdt_start:
     dq 0x0000000000000000
     dq 0x00CF9A000000FFFF            ; code: base=0, limit=4GB, D=1, G=1
