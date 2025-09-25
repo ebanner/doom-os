@@ -1,5 +1,8 @@
 [org 0x7C00]
 
+CODE_SEGMENT_SELECTOR_INDEX equ (1 << 3)        ; 0x08
+DATA_SEGMENT_SELECTOR_INDEX equ (1 << 4)        ; 0x10
+
 [bits 16]
 main:
     cli
@@ -9,16 +12,24 @@ main:
     mov eax, cr0
     or  eax, 1              ; PE=1
     mov cr0, eax
-    jmp 0b1000:protected_mode_entry       ; far JMP
+    jmp CODE_SEGMENT_SELECTOR_INDEX:protected_mode_entry       ; far JMP
 
 [bits 32]
 protected_mode_entry:
-    mov ax, 0b10000         ; set segments in PM
+    mov ax, DATA_SEGMENT_SELECTOR_INDEX       ; set segments in PM
     mov ds, ax
     mov es, ax
     mov fs, ax
     mov gs, ax
     mov ss, ax
+
+; Verify protected mode addressing via GDT works
+mov eax, [gdt_start]         ; expect 0x00000000
+mov ebx, [gdt_start+4]       ; expect 0x00000000
+mov ecx, [gdt_start+8]       ; expect 0x0000FFFF
+mov edx, [gdt_start+12]      ; expect 0x00CF9A00
+mov esi, [gdt_start+16]      ; expect 0x0000FFFF
+mov edi, [gdt_start+20]      ; expect 0x00CF9200
 
 jmp $                   ; spin forever
 
