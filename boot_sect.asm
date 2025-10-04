@@ -20,15 +20,29 @@ protected_mode_entry:
     mov gs, ax
     mov ss, ax
 
-; Verify protected mode addressing via GDT works
-mov eax, [gdt_start]         ; expect 0x00000000
-mov ebx, [gdt_start+4]       ; expect 0x00000000
-mov ecx, [gdt_start+8]       ; expect 0x0000FFFF
-mov edx, [gdt_start+12]      ; expect 0x00CF9A00
-mov esi, [gdt_start+16]      ; expect 0x0000FFFF
-mov edi, [gdt_start+20]      ; expect 0x00CF9200
+%define IDT_BASE  0x00000500
+%define IDT_SIZE  (256*8)
 
-jmp $                   ; spin forever
+idt_create:
+    ; zero the 2 KiB IDT at 0x0500
+    mov edi, IDT_BASE
+    mov ecx, IDT_SIZE / 4
+    xor eax, eax
+    rep stosd
+
+install_idt:
+    lidt [idt_ptr]
+
+    ; Mask ALL IRQs so no external interrupts are delivered
+    mov al, 0xFF
+    out 0x21, al        ; master PIC mask = all masked
+    out 0xA1, al        ; slave PIC  mask = all masked
+
+    ; Enable maskable interrupts (safe because PIC is fully masked)
+    sti
+
+end:
+    jmp $                   ; spin forever
 
 
 ; ---------------- GDT ----------------
@@ -45,6 +59,13 @@ gdt_end:
 gdt_ptr:
     dw gdt_end - gdt_start - 1
     dd gdt_start
+
+; ---------------- IDT ----------------
+align 8
+
+idt_ptr:
+    dw IDT_SIZE - 1
+    dd IDT_BASE
 
 times 510-($-$$) db 0
 dw 0xaa55               ; boot signature
