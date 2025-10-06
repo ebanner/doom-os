@@ -30,6 +30,18 @@ idt_create:
     xor eax, eax
     rep stosd
 
+    ; ---- install one gate at vector 0x30 (48) ----
+    mov eax, isr_test
+    mov dx, ax                     ; offset low
+    shr eax, 16
+    mov bx, ax                     ; offset high
+
+    mov word [IDT_BASE + (0x30*8) + 0], dx
+    mov word [IDT_BASE + (0x30*8) + 2], CODE_SEGMENT_SELECTOR_INDEX
+    mov byte [IDT_BASE + (0x30*8) + 4], 0
+    mov byte [IDT_BASE + (0x30*8) + 5], 0x8E     ; present, DPL=0, 32-bit int gate
+    mov word [IDT_BASE + (0x30*8) + 6], bx
+
 install_idt:
     lidt [idt_ptr]
 
@@ -41,9 +53,16 @@ install_idt:
     ; Enable maskable interrupts (safe because PIC is fully masked)
     sti
 
+    ; ---- trigger it (no STI needed) ----
+    int 0x30
+
 end:
     jmp $                   ; spin forever
 
+; ---- Test ISR: no push/pop, no iret ----
+isr_test:
+    mov eax, 0xEDD1E
+    jmp $                          ; spin so you can inspect in QEMU
 
 ; ---------------- GDT ----------------
 
