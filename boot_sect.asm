@@ -24,13 +24,13 @@ protected_mode_entry:
 %define IDT_SIZE  (256*8)
 
 idt_create:
-    ; zero the 2 KiB IDT at 0x0500
+    ; Zero the 2 KiB IDT at 0x0500
     mov edi, IDT_BASE
     mov ecx, IDT_SIZE / 4
     xor eax, eax
     rep stosd
 
-    ; ---- install one gate at vector 0x30 (48) ----
+    ; ---- Install one gate at vector 0x30 (48) ----
     mov eax, isr_test
     mov dx, ax                     ; offset low
     shr eax, 16
@@ -53,13 +53,13 @@ install_idt:
     ; Enable maskable interrupts (safe because PIC is fully masked)
     sti
 
-    ; ---- trigger it (no STI needed) ----
+    ; ---- Trigger ISR ----
     int 0x30
 
 end:
     jmp $                   ; spin forever
 
-; ---- Test ISR: no push/pop, no iret ----
+; ---- Test ISR ----
 isr_test:
     mov eax, 0xEDD1E
     jmp $                          ; spin so you can inspect in QEMU
