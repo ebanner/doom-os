@@ -21,7 +21,7 @@ kernel.o:
 kernel.elf: kernel.o boot_sector.bin
 	@BOOT_LEN=$$(wc -c < boot_sector.bin); \
 	TEXT_ADDR=$$((0x7C00 + $$BOOT_LEN)); \
-	ld.lld -m elf_i386 -nostdlib --image-base=0 -Ttext $$TEXT_ADDR -o $@ kernel.o
+	ld.lld -m elf_i386 -nostdlib --image-base=0 -Ttext $$TEXT_ADDR -o kernel.elf kernel.o
 
 kernel.bin: kernel.elf
 	llvm-objcopy -O binary -j .text kernel.elf kernel.bin
