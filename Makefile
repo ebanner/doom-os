@@ -20,9 +20,7 @@ kernel.o:
 
 kernel.elf: kernel.o boot_sector.bin
 	@BOOT_LEN=$$(wc -c < boot_sector.bin); \
-	echo "BOOT_LEN=$$BOOT_LEN"; \
 	TEXT_ADDR=$$((0x7C00 + $$BOOT_LEN)); \
-	echo "TEXT_ADDR=$$TEXT_ADDR"; \
 	ld.lld -m elf_i386 -nostdlib --image-base=0 -Ttext $$TEXT_ADDR -o $@ kernel.o
 
 kernel.bin: kernel.elf
