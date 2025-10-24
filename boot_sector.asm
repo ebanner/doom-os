@@ -1,7 +1,11 @@
-[org 0x7C00]
+; External function declarations
+extern main
 
 [bits 16]
-main:
+global _start
+extern main
+
+_start:
     cli
 
     ; --- Enter protected mode ---
@@ -19,12 +23,12 @@ protected_mode_entry:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-
-jmp $
-
-; main:
-;     call kmain
-
+    
+    ; Set up stack pointer
+    mov esp, 0x90000
+    
+    ; Call the embedded C code
+    call main
 
 ; ---------------- GDT ----------------
 

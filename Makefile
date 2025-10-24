@@ -1,35 +1,35 @@
-run: os.img
-	qemu-system-i386 -nographic os.img
+CC = i686-elf-gcc
+AS = nasm
 
-debug: os.img
-	qemu-system-i386 -monitor stdio os.img
+CFLAGS = -m32 -ffreestanding -fno-pic -fno-stack-protector -nostdlib -O2
+ASFLAGS = -f elf32
 
-boot_sector.bin:
-	nasm boot_sector.asm -f bin -o boot_sector.bin
+run: boot.img
+	qemu-system-i386 -nographic boot.img
 
-kernel.o:
-	clang \
-		-target i386-elf \
-		-m32 \
-		-ffreestanding \
-		-fno-builtin \
-		-fno-stack-protector \
-		-nostdlib \
-		-c kernel.c \
-		-o kernel.o
+debug: boot.img
+	qemu-system-i386 -monitor stdio boot.img
 
-kernel.elf: kernel.o boot_sector.bin
-	@BOOT_LEN=$$(wc -c < boot_sector.bin); \
-	TEXT_ADDR=$$((0x7C00 + $$BOOT_LEN)); \
-	ld.lld -m elf_i386 -nostdlib --image-base=0 -Ttext $$TEXT_ADDR -o kernel.elf kernel.o
+all: boot.img
 
-kernel.bin: kernel.elf
-	llvm-objcopy -O binary -j .text kernel.elf kernel.bin
+boot_sector.o: boot_sector.asm
+	$(AS) $(ASFLAGS) boot_sector.asm -o boot_sector.o
 
-os.img: kernel.bin boot_sector.bin
-	cat boot_sector.bin kernel.bin > os.img
-	truncate -s 510 os.img
-	printf '\x55\xAA' >> os.img
+kernel.o: kernel.c
+	$(CC) $(CFLAGS) -c kernel.c -o kernel.o
+
+boot.elf: boot_sector.o kernel.o
+	i686-elf-ld -m elf_i386 -T link.ld -o boot.elf boot_sector.o kernel.o
+
+boot.bin: boot.elf
+	i686-elf-objcopy -O binary boot.elf boot.bin
+
+boot.img: boot.bin
+	truncate -s 510 boot.img
+	dd if=boot.bin of=boot.img conv=notrunc 2>/dev/null
+	printf '\x55\xAA' >> boot.img
+	ls -l boot.img
+	@echo "Built boot.img"
 
 clean:
-	rm -rf *.bin *.o *.elf os.img
+	rm -f boot_sector.o kernel.o boot.elf boot.bin boot.img
