@@ -4,7 +4,7 @@ Minimal OS to run DOOM
 
 ## Progress
 
-- [X] Minimal cross-compiling
+Check out the [Releases](https://github.com/ebanner/doom-os/releases) for the latest progress.
 
 <img width="1002" height="807" alt="image" src="https://github.com/user-attachments/assets/ba7c8b3f-284e-426c-9c1d-daf8f4a513cc" />
 
