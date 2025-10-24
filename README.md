@@ -1,9 +1,6 @@
 # doom-os
 
-# Progress
+Minimal cross-compiling
 
-- [X] IDT installed
-  - [X] Tested interrupt `0x30`
-- [X] GDT installed
+<img width="1002" height="807" alt="image" src="https://github.com/user-attachments/assets/ba7c8b3f-284e-426c-9c1d-daf8f4a513cc" />
 
-<img width="1275" height="624" alt="image" src="https://github.com/user-attachments/assets/8641485b-d85d-4071-8477-0becf4fe1120" />
