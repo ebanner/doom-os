@@ -6,10 +6,10 @@ debug: os.img
 
 all: os.img
 
-boot_sector.o: boot_sector.asm
-	nasm -f elf32 boot_sector.asm -o boot_sector.o
+boot_sector_asm.o: boot_sector.asm
+	nasm -f elf32 boot_sector.asm -o boot_sector_asm.o
 
-kernel.o: kernel.c
+boot_sector_c.o: boot_sector.c
 	i686-elf-gcc \
 		-m32 \
 		-ffreestanding \
@@ -17,15 +17,15 @@ kernel.o: kernel.c
 		-fno-stack-protector \
 		-nostdlib \
 		-O2 \
-		-c kernel.c \
-		-o kernel.o
+		-c boot_sector.c \
+		-o boot_sector_c.o
 
-os.elf: boot_sector.o kernel.o
+os.elf: boot_sector_asm.o boot_sector_c.o
 	i686-elf-ld \
 		-m elf_i386 \
 		-T link.ld \
 		-o os.elf \
-		boot_sector.o kernel.o
+		boot_sector_asm.o boot_sector_c.o
 
 os.bin: os.elf
 	i686-elf-objcopy -O binary os.elf os.bin
