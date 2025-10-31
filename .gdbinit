@@ -2,13 +2,13 @@
 target remote :1234
 symbol-file os.elf
 
-# ---- start in real mode (boot sector) ----------------------------------------
-set architecture i8086
-set disassembly-flavor intel
-set disassemble-next-line on
-layout asm
-layout regs
+# ---- start in protected mode (boot sector) ----------------------------------------
+set architecture i386
+set disassemble-next-line off
+layout split
+directory .
 
+# ---- breakpoints -------------------------------------------------------
 break *0x7C00
 tbreak main
 continue
@@ -22,14 +22,12 @@ define rm
     layout regs
 end
 
-# Switch to PROTECTED MODE / C SOURCE view (32-bit, DWARF line mapping)
-define pm
-    set architecture i386
-    set disassemble-next-line off
-    layout split
-    directory .
-    # If your DWARF paths are from another machine, uncomment and edit:
-    # set substitute-path /old/build/root /current/source/root
+# ---- Show source and regs in a split pane --------------------------
+define layout-src-regs
+    tui enable
+    layout src
+    tui reg general
+    winheight src 20
 end
 
 # Skip over the next 2-byte INT instruction in real mode (your existing helper)
