@@ -16,7 +16,7 @@ This returns a list of memory map entries, each describing a region’s:
 | 4    | ACPI NVS         |
 | 5    | Bad memory       |
 
-## First section
+## Section 1
 
 ```
 (qemu) x/gx 0x00090000
@@ -27,7 +27,7 @@ This returns a list of memory map entries, each describing a region’s:
 00090010: 0x0000000000000001
 ```
 
-## Second section
+## Section 2
 
 ```
 (qemu) x/gx 0x00090000 + 20
@@ -38,7 +38,7 @@ This returns a list of memory map entries, each describing a region’s:
 00090024: 0x00000002
 ```
 
-## Third section
+## Section 3
 
 ```
 (qemu) x/gx 0x00090000 + 40
@@ -49,7 +49,7 @@ This returns a list of memory map entries, each describing a region’s:
 00090038: 0x0000000000000002
 ```
 
-## Forth section
+## Section 4
 
 ```
 (qemu) x/gx 0x00090000 + 60
@@ -60,7 +60,7 @@ This returns a list of memory map entries, each describing a region’s:
 0009004c: 0x0000000000000001
 ```
 
-## Fifth section
+## Section 5
 
 ```
 (qemu) x/gx 0x00090000 + 80
@@ -71,7 +71,7 @@ This returns a list of memory map entries, each describing a region’s:
 00090060: 0x0000000000000002
 ```
 
-## Sixth section
+## Section 6
 
 ```
 (qemu) x/gx 0x00090000 + 100
