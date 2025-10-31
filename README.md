@@ -8,7 +8,7 @@ Check out the [Releases](https://github.com/ebanner/doom-os/releases) for the la
 
 <img width="1002" height="807" alt="image" src="https://github.com/user-attachments/assets/ba7c8b3f-284e-426c-9c1d-daf8f4a513cc" />
 
-<img width="986" height="850" alt="image" src="https://github.com/user-attachments/assets/d3569adb-8a79-446d-85ae-5e1de6f1e12e" />
+<img width="1026" height="837" alt="image" src="https://github.com/user-attachments/assets/4c9f4e31-14ca-40f3-9e33-da190ef39d51" />
 
 ## Toolchain (incomplete)
 
