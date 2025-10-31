@@ -1,13 +1,11 @@
-run: os.img
-	qemu-system-i386 -nographic os.img
-
 debug: os.img
-	qemu-system-i386 -monitor stdio os.img
+	qemu-system-i386 -S -s -monitor stdio os.img
 
-all: os.img
+memory_map: memory_map.bin
+	qemu-system-i386 -monitor stdio memory_map.bin
 
 boot_sector_asm.o: boot_sector.asm
-	nasm -f elf32 boot_sector.asm -o boot_sector_asm.o
+	nasm -f elf32 -g -F dwarf boot_sector.asm -o boot_sector_asm.o
 
 boot_sector_c.o: boot_sector.c
 	i686-elf-gcc \
@@ -17,6 +15,7 @@ boot_sector_c.o: boot_sector.c
 		-fno-stack-protector \
 		-nostdlib \
 		-O2 \
+		-g \
 		-c boot_sector.c \
 		-o boot_sector_c.o
 
@@ -34,6 +33,10 @@ os.img: os.bin
 	truncate -s 510 os.img
 	dd if=os.bin of=os.img conv=notrunc 2>/dev/null
 	printf '\x55\xAA' >> os.img
+
+docker:
+	# docker build -t doom-os .
+	docker run -it --rm -v $(CURDIR):/src doom-os
 
 clean:
 	rm -f *.o *.elf *.bin *.img
