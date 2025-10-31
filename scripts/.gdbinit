@@ -6,8 +6,7 @@ layout asm
 layout regs
 set disassemble-next-line on
 
-#
-# Skip over int 0x15
-#
-# (gdb) tbreak *($cs*16 + $eip + 2)
-#
+define skipint
+    tbreak *($cs*16 + $eip + 2)
+    continue
+end
