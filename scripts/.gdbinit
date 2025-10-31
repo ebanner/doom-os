@@ -1,5 +1,6 @@
 target remote :1234
 set architecture i8086
+symbol-file memory_map.elf
 break *0x7C00
 c
 layout asm

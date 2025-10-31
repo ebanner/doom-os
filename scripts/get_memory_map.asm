@@ -1,8 +1,8 @@
 ; get_memory_map_once.asm — one-shot E820 (first entry only)
 BITS 16
-ORG 0x7C00
 
-start:
+_start:
+first:
     mov sp, 0x7C00
 
     ; Buffer for the entry: ES = 0x9000, DI = 0x0000
@@ -17,7 +17,9 @@ start:
     mov ecx, 24                 ; request 24 bytes (ACPI 3.0 layout)
     int 0x15
 
+second:
     ; ---- Second E820 call ----
+    xor bx, bx
     add di, cx
 
     mov eax, 0xE820
@@ -26,6 +28,7 @@ start:
     ; EBX already has continuation from first call
     int 0x15
 
+third:
     ; ---- Third E820 call ----
     add di, cx
 
@@ -35,6 +38,7 @@ start:
     ; EBX already has continuation from first call
     int 0x15
 
+forth:
     ; ---- Forth E820 call ----
     add di, cx
 
@@ -44,6 +48,7 @@ start:
     ; EBX already has continuation from first call
     int 0x15
 
+fifth:
     ; ---- Fifth E820 call ----
     add di, cx
 
@@ -53,6 +58,7 @@ start:
     ; EBX already has continuation from first call
     int 0x15
 
+sixth:
     ; ---- Sixth E820 call ----
     add di, cx
 
