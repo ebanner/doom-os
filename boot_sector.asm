@@ -3,7 +3,7 @@ extern main
 
 [bits 16]
 global _start
-extern main
+extern write_idt
 
 _start:
     cli
@@ -28,7 +28,9 @@ protected_mode_entry:
     mov esp, 0x90000
     
     ; Call the embedded C code
-    call main
+    call write_idt
+
+    jmp $
 
 ; ---------------- GDT ----------------
 

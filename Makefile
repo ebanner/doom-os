@@ -1,3 +1,6 @@
+run: os.img
+	qemu-system-i386 -monitor stdio os.img
+
 debug: os.img
 	qemu-system-i386 -S -s -monitor stdio os.img
 
