@@ -25,7 +25,7 @@ protected_mode_entry:
     mov ss, ax
     
     ; Set up stack pointer
-    mov esp, 0x90000
+    mov esp, 0x7c00
     
     ; Call the embedded C code
     call write_idt
