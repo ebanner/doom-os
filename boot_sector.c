@@ -1,5 +1,7 @@
 // boot_sector.c — C code in the initial 512 mb boot sector
 
+extern void isr_hang(void);
+
 #define IDT_BASE   0x10000u
 
 typedef unsigned char  u8;   // 1 byte

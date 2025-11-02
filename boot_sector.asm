@@ -2,7 +2,7 @@
 extern main
 
 [bits 16]
-global _start
+global _start, isr_hang
 extern write_idt
 
 _start:
@@ -30,6 +30,16 @@ protected_mode_entry:
     ; Call the embedded C code
     call write_idt
 
+    ; Load IDTR: limit = size-1, base = 0x10000
+    ; lidt    [idtr_min]
+
+    jmp $
+
+; ------------------------------------------------------------
+; Tiny “do nothing safely” handler
+; ------------------------------------------------------------
+isr_hang:
+    cli
     jmp $
 
 ; ---------------- GDT ----------------
