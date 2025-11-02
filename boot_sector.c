@@ -2,12 +2,15 @@
 
 #define IDT_BASE   0x10000u
 
+typedef unsigned char  u8;   // 1 byte
+typedef unsigned short u16;  // 2 bytes
+
 struct __attribute__((packed)) idt_entry {
-    unsigned short off_low;    // low 16 bits of address
-    unsigned short sel;        // segment selector
-    unsigned char  zero;       // reserved byte
-    unsigned char  type_attr;  // standard interrupt gate attributes
-    unsigned short off_high;   // high 16 bits of address
+    u16 off_low;
+    u16 sel;
+    u8  zero;
+    u8  type_attr;
+    u16 off_high;
 };
 
 void write_idt(void) {
