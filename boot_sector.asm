@@ -2,7 +2,7 @@
 extern main
 
 [bits 16]
-global _start, isr_hang
+global _start, isr_handler
 extern write_idt
 
 _start:
@@ -14,6 +14,7 @@ _start:
     or  eax, 1              ; PE=1
     mov cr0, eax
     jmp CODE_SEGMENT_SELECTOR_INDEX:protected_mode_entry       ; far JMP
+
 
 [bits 32]
 protected_mode_entry:
@@ -31,16 +32,36 @@ protected_mode_entry:
     call write_idt
 
     ; Load IDTR: limit = size-1, base = 0x10000
-    ; lidt    [idtr_min]
+    lidt [idt_ptr]
+
+    ; Test the IDT by triggering interrupt 0x20
+    int 0x20
 
     jmp $
 
 ; ------------------------------------------------------------
 ; Tiny “do nothing safely” handler
 ; ------------------------------------------------------------
-isr_hang:
-    cli
-    jmp $
+isr_handler:
+    ; pusha
+
+    mov eax, 0xDEADBEEF
+    jmp $  ; Spin in loop
+    
+    ; popa
+    iretd
+
+; ---------------- IDT ----------------
+
+IDT_BASE       equ 0x10000
+IDT_COUNT      equ 256
+ISR_ENTRY_SIZE equ 8
+
+idt_ptr:
+    dw (IDT_COUNT*ISR_ENTRY_SIZE - 1) ; limit = 256*8-1 = 0x07FF
+    dd IDT_BASE                       ; base
+idt_end:
+
 
 ; ---------------- GDT ----------------
 
