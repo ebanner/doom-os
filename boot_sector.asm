@@ -1,14 +1,16 @@
 ; External function declarations
-extern main
 
-[bits 16]
 global _start, isr_handler
 extern write_idt
 
+[bits 16]
 _start:
+    ; Set up stack pointer
+    mov esp, 0x7c00
+    
+    ; --- Enter protected mode ---
     cli
 
-    ; --- Enter protected mode ---
     lgdt [gdt_ptr]
     mov eax, cr0
     or  eax, 1              ; PE=1
@@ -24,9 +26,6 @@ protected_mode_entry:
     mov fs, ax
     mov gs, ax
     mov ss, ax
-    
-    ; Set up stack pointer
-    mov esp, 0x7c00
     
     ; Call the embedded C code
     call write_idt
