@@ -33,8 +33,15 @@ protected_mode_entry:
     ; Load IDTR: limit = size-1, base = 0x10000
     lidt [idt_ptr]
 
-    ; Test the IDT by triggering interrupt 0x20
-    int 0x20
+    ; Mask PIC interrupts
+    mov al, 0xFF
+    out 0x21, al    ; tell master PIC: ignore IRQ0–7
+    out 0xA1, al    ; tell slave PIC: ignore IRQ8–15
+
+    ; Re-enable interrupts now that IDT is set up
+    sti
+
+    mov eax, 0xDEADBEEF
 
     jmp $
 
@@ -44,9 +51,8 @@ protected_mode_entry:
 isr_handler:
     ; pusha
 
-    mov eax, 0xDEADBEEF
-    jmp $  ; Spin in loop
-    
+    ; TODO: put interrupt handling code here
+
     ; popa
     iretd
 
