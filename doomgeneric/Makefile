@@ -6,16 +6,39 @@ m_random.o: m_random.c m_random.h doomtype.h
 	gcc -Wall \
 		-Wextra \
 		-std=c99 \
+		-ffreestanding \
+		-nostdlib \
+		-nostdinc \
+		-I. \
+		-fno-builtin \
 		-c m_random.c \
 		-o m_random.o
 
-# Compile executable
-main: main.c m_random.c m_random.h doomtype.h
+# Compile main object file
+main.o: main.c m_random.h doomtype.h
 	gcc -Wall \
 		-Wextra \
 		-std=c99 \
-		main.c \
-		m_random.c \
+		-ffreestanding \
+		-nostdlib \
+		-nostdinc \
+		-I. \
+		-fno-builtin \
+		-c main.c \
+		-o main.o
+
+# Link executable
+main: main.o m_random.o
+	gcc -Wall \
+		-Wextra \
+		-std=c99 \
+		-ffreestanding \
+		-nostdlib \
+		-nostdinc \
+		-I. \
+		-fno-builtin \
+		main.o \
+		m_random.o \
 		-o main
 
 # Clean build artifacts
