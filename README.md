@@ -1,6 +1,6 @@
 # doom-os
 
-Minimal OS to run DOOM
+Port of [doomgeneric](https://github.com/ozkl/doomgeneric) to bare metal x86.
 
 ## Progress
 
