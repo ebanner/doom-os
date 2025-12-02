@@ -2,6 +2,7 @@
 
 global _start, isr_handler
 extern write_idt
+extern main
 
 [bits 16]
 _start:
@@ -42,6 +43,8 @@ protected_mode_entry:
     sti
 
     mov eax, 0xDEADBEEF
+
+    call main
 
     jmp $
 

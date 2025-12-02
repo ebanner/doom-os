@@ -17,17 +17,52 @@ boot_sector_c.o: boot_sector.c
 		-fno-pic \
 		-fno-stack-protector \
 		-nostdlib \
-		-O2 \
+		-O0 \
 		-g \
 		-c boot_sector.c \
 		-o boot_sector_c.o
 
-os.elf: boot_sector_asm.o boot_sector_c.o
+doomgeneric/m_random.o: doomgeneric/m_random.c libc/m_random.h doomgeneric/doomtype.h
+	i686-elf-gcc \
+		-m32 \
+		-std=c99 \
+		-ffreestanding \
+		-fno-pic \
+		-fno-stack-protector \
+		-nostdlib \
+        -nostdinc \
+        -Idoomgeneric \
+        -fno-builtin \
+		-O0 \
+		-g \
+		-c doomgeneric/m_random.c \
+		-o doomgeneric/m_random.o
+
+doomgeneric/main.o: doomgeneric/main.c libc/m_random.h doomgeneric/doomtype.h
+	i686-elf-gcc \
+		-m32 \
+		-std=c99 \
+		-ffreestanding \
+		-fno-pic \
+		-fno-stack-protector \
+		-nostdlib \
+        -nostdinc \
+        -Idoomgeneric \
+        -fno-builtin \
+		-O0 \
+		-g \
+		-c doomgeneric/main.c \
+		-o doomgeneric/main.o
+
+os.elf: boot_sector_asm.o boot_sector_c.o doomgeneric/m_random.o doomgeneric/main.o
 	i686-elf-ld \
 		-m elf_i386 \
 		-T link.ld \
 		-o os.elf \
-		boot_sector_asm.o boot_sector_c.o
+		boot_sector_asm.o \
+		boot_sector_c.o \
+		doomgeneric/m_random.o \
+		doomgeneric/main.o
 
 os.bin: os.elf
 	i686-elf-objcopy -O binary os.elf os.bin
@@ -42,4 +77,4 @@ docker:
 	docker run -it --rm -v $(CURDIR):/src doom-os
 
 clean:
-	rm -f *.o *.elf *.bin *.img
+	rm -f *.o *.elf *.bin *.img doomgeneric/*.o
