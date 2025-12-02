@@ -35,8 +35,5 @@ int P_Random (void);
 // Fix randoms for demos.
 void M_ClearRandom (void);
 
-// Seed random number generator (call this to get different sequences)
-void M_SeedRandom (void);
-
 
 #endif
