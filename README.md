@@ -1,6 +1,6 @@
 # doom-os
 
-Port of [doomgeneric](https://github.com/ozkl/doomgeneric) to bare metal x86.
+Port of [doomgeneric](https://github.com/ozkl/doomgeneric) to x86 bare metal.
 
 ## Progress
 
