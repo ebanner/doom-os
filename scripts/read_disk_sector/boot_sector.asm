@@ -1,4 +1,4 @@
-[ORG 0x7C00]
+[BITS 16]
 
 main:
   xor ax, ax
@@ -24,5 +24,3 @@ db 0x55, 0xaa         ; Boot signature
 
 sector2:
     db "Hello from sector 2!", 0
-
-times 512-($-sector2) db 0
