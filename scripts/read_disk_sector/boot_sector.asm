@@ -10,7 +10,7 @@ main:
   mov ch, 0      ; Cylinder number (which 3D ring)
   mov cl, 2      ; Sector number (which slice of the pie [ring])
   mov dh, 0      ; Head number (which level of the 3D ring [depth])
-  mov bx, 0x7E00 ; Buffer to store read data
+  mov bx, 0x7e00 ; Buffer to store read data
   int 0x13       ; BIOS interrupt for disk operations
 
 
