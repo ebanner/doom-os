@@ -28,7 +28,7 @@ doomgeneric/m_random.o: doomgeneric/m_random.c doomgeneric/m_random.h doomgeneri
 		-fno-stack-protector \
 		-nostdlib \
         -nostdinc \
-        -Idoomgeneric \
+        -Ilibc \
         -fno-builtin \
 		-O0 \
 		-g \
@@ -44,7 +44,7 @@ doomgeneric/main.o: doomgeneric/main.c doomgeneric/m_random.h doomgeneric/doomty
 		-fno-stack-protector \
 		-nostdlib \
         -nostdinc \
-        -Idoomgeneric \
+        -Ilibc \
         -fno-builtin \
 		-O0 \
 		-g \
