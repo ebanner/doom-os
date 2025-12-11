@@ -1,3 +1,3 @@
 # libc
 
-<img width="692" height="844" alt="image" src="https://github.com/user-attachments/assets/3ff21d39-c3b6-4008-b13c-b328b537aebb" />
+<img width="692" height="844" alt="image" src="https://github.com/user-attachments/assets/0a1e3a3d-db60-4c7c-b1da-3609fee0386a" />
