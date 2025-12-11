@@ -3,6 +3,11 @@
 
 /*
  *
- *
+   (insert-image
+    (create-image
+     (expand-file-name "twos-complement.png" default-directory)
+      nil nil :scale 0.25
+    )
+   )
  *
  */
