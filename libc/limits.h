@@ -15,6 +15,6 @@
      (expand-file-name "img/range-of-values.png" default-directory)
       nil nil :scale 0.25
     )
-   )  
+   ) 
  *
  */
