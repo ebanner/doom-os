@@ -51,35 +51,26 @@ uint64_t __udivdi3(uint64_t a, uint64_t b)
     else if (b_high == 0)
         return a / b_low;
     
-    /* For other cases, use a simple binary long division algorithm */
-    /* This avoids recursion by using 32-bit operations */
+    int num_shift = 0;
+    uint64_t shifted_b = b;
+    while (shifted_b <= a && shifted_b != 0) {
+        shifted_b <<= 1;
+        num_shift++;
+    }
+
+    if (num_shift > 0) {
+        num_shift--;
+        shifted_b >>= 1;
+    }
+
     uint64_t quotient = 0;
-    uint64_t remainder = 0;
-    
-    /* Break into 32-bit halves for manual division */
-    uint32_t a_high = (uint32_t)(a >> 32);
-    uint32_t a_low = (uint32_t)a;
-    
-    /* Full 64-bit division using binary search / bit shifting */
-    /* Shift divisor left until it's just less than dividend */
-    int shift = 0;
-    uint64_t temp_b = b;
-    while (temp_b <= a && temp_b != 0) {
-        temp_b <<= 1;
-        shift++;
-    }
-    if (shift > 0) {
-        shift--;
-        temp_b >>= 1;
-    }
-    
-    /* Now do long division */
-    remainder = a;
-    for (int i = shift; i >= 0; i--) {
-        if (remainder >= (b << i)) {
-            remainder -= (b << i);
+    uint64_t remainder = a;
+    for (int i = num_shift; i >= 0; i--) {
+        if (remainder >= shifted_b) {
+            remainder -= shifted_b;
             quotient |= (1ULL << i);
         }
+        shifted_b >>= 1;
     }
     
     return quotient;
