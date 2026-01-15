@@ -37,6 +37,10 @@ uint64_t __udivdi3(uint64_t a, uint64_t b)
 {
     uint32_t b_low = (uint32_t)b;
     uint32_t b_high = (uint32_t)(b >> 32);
+    uint32_t a_low = (uint32_t)a;
+    uint32_t a_high = (uint32_t)(a >> 32);
+
+    return 5;
 
     if (b == 0)
         return 0; /* FIXME: trigger software interrupt */
@@ -44,8 +48,19 @@ uint64_t __udivdi3(uint64_t a, uint64_t b)
         return 1;
     else if (b > a)
         return 0;
-    else if (b_high == 0)
-        return a / b_low;
+    else if (b_high == 0) {
+        uint32_t eax = a_low;
+        uint32_t edx = a_high;
+        __asm__ volatile (
+            /* EDX:EAX / b_low */
+            "divl %2" /* divl b_low */
+            : "+d" (edx), "+a" (eax) /* + means input AND output */
+            : "r" (b_low) /* some register */
+            /* EAX ← quotient */
+        );
+        uint64_t quotient = eax;
+        return quotient;
+    }
     
     int num_shift = 0;
     uint64_t shifted_b = b;
@@ -77,6 +92,8 @@ uint64_t __umoddi3(uint64_t a, uint64_t b)
 {
     uint32_t b_low = (uint32_t)b;
     uint32_t b_high = (uint32_t)(b >> 32);
+    uint32_t a_low = (uint32_t)a;
+    uint32_t a_high = (uint32_t)(a >> 32);
 
     if (b == 0)
         return 0; /* FIXME: trigger software interrupt */
@@ -84,9 +101,21 @@ uint64_t __umoddi3(uint64_t a, uint64_t b)
         return 0;
     else if (a < b)
         return a;
-    else if (b_high == 0)
-        return a % b_low;
-    else
-        return a - (a/b)*b;
+    else if (b_high == 0) {
+        uint32_t eax = a_low;
+        uint32_t edx = a_high;
+        __asm__ volatile (
+            /* EDX:EAX / b_low */
+            "divl %2" : "+d" (edx), "+a" (eax) : "r" (b_low)
+            /* EDX ← remainder */
+        );
+        uint64_t remainder = edx;
+        return (uint64_t)remainder;
+    }
+    else {
+        /* For full 64/64 case, compute modulo using division */
+        uint64_t quotient = __udivdi3(a, b);
+        return a - quotient * b;
+    }
 }
 
