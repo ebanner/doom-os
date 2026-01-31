@@ -40,23 +40,22 @@ uint64_t __udivdi3(uint64_t a, uint64_t b)
     uint32_t a_low = (uint32_t)a;
     uint32_t a_high = (uint32_t)(a >> 32);
 
-    return 5;
-
     if (b == 0)
-        return 0; /* FIXME: trigger software interrupt */
+        /* FIXME: trigger software interrupt */
+        return 0;
     else if (b == a)
         return 1;
     else if (b > a)
         return 0;
     else if (b_high == 0) {
+        /* div EDX:EAX / b_low */
         uint32_t eax = a_low;
         uint32_t edx = a_high;
         __asm__ volatile (
-            /* EDX:EAX / b_low */
-            "divl %2" /* divl b_low */
-            : "+d" (edx), "+a" (eax) /* + means input AND output */
-            : "r" (b_low) /* some register */
-            /* EAX ← quotient */
+            "divl %[divisor]"
+            : "+d" (edx), "+a" (eax)
+            : [divisor] "r" (b_low)
+            : "cc"
         );
         uint64_t quotient = eax;
         return quotient;
