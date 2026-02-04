@@ -19,7 +19,13 @@ boot_sector_c.o: boot_sector.c
 		-c boot_sector.c \
 		-o boot_sector_c.o
 
-doomgeneric/m_random.o: doomgeneric/m_random.c doomgeneric/m_random.h doomgeneric/doomtype.h
+DOOMGENERIC_SRC := $(wildcard doomgeneric/*.c)
+DOOMGENERIC_OBJ := $(DOOMGENERIC_SRC:.c=.o)
+
+$(info DOOMGENERIC_SRC = $(DOOMGENERIC_SRC))
+$(info DOOMGENERIC_OBJ = $(DOOMGENERIC_OBJ))
+
+doomgeneric/%.o: doomgeneric/%.c
 	i686-elf-gcc \
 		-m32 \
 		-std=c99 \
@@ -32,10 +38,10 @@ doomgeneric/m_random.o: doomgeneric/m_random.c doomgeneric/m_random.h doomgeneri
         -fno-builtin \
 		-O0 \
 		-g \
-		-c doomgeneric/m_random.c \
-		-o doomgeneric/m_random.o
+		-c $< \
+		-o $@
 
-doomgeneric/main.o: doomgeneric/main.c doomgeneric/m_random.h doomgeneric/doomtype.h
+libc/stdlib.o: libc/stdlib.c libc/stdlib.h
 	i686-elf-gcc \
 		-m32 \
 		-std=c99 \
@@ -43,23 +49,22 @@ doomgeneric/main.o: doomgeneric/main.c doomgeneric/m_random.h doomgeneric/doomty
 		-fno-pic \
 		-fno-stack-protector \
 		-nostdlib \
-        -nostdinc \
-        -Ilibc \
-        -fno-builtin \
+		-nostdinc \
+		-Ilibc \
+		-fno-builtin \
 		-O0 \
 		-g \
-		-c doomgeneric/main.c \
-		-o doomgeneric/main.o
+		-c libc/stdlib.c \
+		-o libc/stdlib.o
 
-os.elf: boot_sector_asm.o boot_sector_c.o doomgeneric/m_random.o doomgeneric/main.o
+os.elf: boot_sector_asm.o boot_sector_c.o $(DOOMGENERIC_OBJ) libc/stdlib.o
 	i686-elf-ld \
 		-m elf_i386 \
 		-T link.ld \
 		-o os.elf \
-		boot_sector_asm.o \
-		boot_sector_c.o \
-		doomgeneric/m_random.o \
-		doomgeneric/main.o
+		boot_sector_asm.o boot_sector_c.o \
+		$(DOOMGENERIC_OBJ) \
+		libc/stdlib.o
 
 os.img: os.elf
 	i686-elf-objcopy -O binary os.elf os.img
@@ -69,4 +74,4 @@ docker:
 	docker run -it --rm -v $(CURDIR):/src doom-os
 
 clean:
-	rm -f *.o *.elf *.bin *.img doomgeneric/*.o
+	rm -f *.o *.elf *.bin *.img doomgeneric/*.o libc/*.o
