@@ -1,5 +1,5 @@
 target remote :1234
-symbol-file os.elf
+symbol-file build/os.elf
 
 layout split
 directory .
